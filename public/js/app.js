@@ -698,12 +698,17 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   showOnboarding();
   initTabs();
   initSyncUI();
-  initMathsSections();
-  await initScienceSections();
-  await initLabsSections();
+  // Lazy init – only init visible tab, others on demand via initTabs
+  initMathsSections(); // will init if container visible, otherwise retry on tab switch
   initCodeArena();
   initSettings();
   initPWA();
+  // Don't eagerly init science/labs when hidden – initTabs will handle
+  // But try to init if user lands directly on those tabs (from localStorage)
+  const savedTab = (()=>{ try{ return localStorage.getItem('stroke_active_tab'); }catch{ return null; } })();
+  if(savedTab==='science'){ await initScienceSections(); window._strokeScienceInited=true; }
+  if(savedTab==='labs'){ await initLabsSections(); window._strokeLabsInited=true; }
+  if(savedTab==='coding'){ initCodeArena(); window._strokeCodingInited=true; }
   try{
     const res=await fetch('/api/health');
     const data=await res.json();
