@@ -75,7 +75,10 @@ export const Science = {
       <div class="card card-cream" style="margin-top:12px">
         <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
           <h3 style="margin:0">${element.name} (${element.symbol})</h3>
-          <button class="btn btn-sm" data-action="reload-atom">Reload 3D</button>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-sm" data-action="front-atom">⬆ Front</button>
+            <button class="btn btn-sm" data-action="reload-atom">Reload 3D</button>
+          </div>
         </div>
         <p class="muted small">Atomic #${element.number} – Mass ${element.mass} – ${element.category}<br/>
         Config: ${element.electronConfig} – Discovered: ${element.discovered}</p>
@@ -181,12 +184,22 @@ export const Science = {
       }
       animate();
 
+      const frontBtn=container.querySelector('[data-action="front-atom"]');
+      function toggleFront(){
+        const wrap=canvas.parentElement;
+        wrap.classList.toggle('front');
+        document.querySelectorAll('.card').forEach(c=>{
+          if(c!==container.closest('.card')) c.classList.toggle('front-behind', wrap.classList.contains('front'));
+        });
+        setTimeout(resize, 50);
+      }
+      frontBtn.addEventListener('click', toggleFront);
+
       const reload=async ()=>{
         if(raf) cancelAnimationFrame(raf);
         try{ ro.disconnect(); }catch{}
         window.removeEventListener('resize', resize);
         renderer.dispose();
-        // re-init
         await Science.initAtomViewer(container, element);
       };
       reloadBtn.addEventListener('click', reload);
@@ -226,6 +239,7 @@ export const Science = {
         </select>
         <button class="btn btn-sm" data-action="spin">Toggle spin</button>
         <button class="btn btn-sm" data-action="explode">Explode / Assemble</button>
+        <button class="btn btn-sm" data-action="front-mol">⬆ Front</button>
         <button class="btn btn-sm" data-action="reload-mol">Reload 3D</button>
       </div>
       <div class="canvas-wrap molecule-view"><canvas aria-label="Molecule 3D"></canvas></div>
@@ -371,6 +385,12 @@ export const Science = {
           }
         });
       });
+      container.querySelector('[data-action="front-mol"]')?.addEventListener('click', ()=>{
+        const wrap=canvas.parentElement;
+        wrap.classList.toggle('front');
+        document.querySelectorAll('.card').forEach(c=>{ if(c!==container.closest('.card')) c.classList.toggle('front-behind', wrap.classList.contains('front')); });
+        setTimeout(resize,50);
+      });
       container.querySelector('[data-action="reload-mol"]').addEventListener('click', async ()=>{
         if(raf) cancelAnimationFrame(raf);
         ro.disconnect();
@@ -429,6 +449,7 @@ export const Science = {
         <button class="btn btn-sm" data-action="toggle-orbit">Toggle orbits</button>
         <button class="btn btn-sm" data-action="toggle-gravity">Gravity lab</button>
         <button class="btn btn-sm btn-primary" data-action="rocket">Rocket lab</button>
+        <button class="btn btn-sm" data-action="front-solar">⬆ Front</button>
         <button class="btn btn-sm" data-action="reload-solar">Reload 3D</button>
       </div>
       <div class="canvas-wrap solar-view"><canvas aria-label="Solar system 3D"></canvas></div>
@@ -613,6 +634,12 @@ export const Science = {
           if(y<0.5){ y=0.5; vy=0; }
         }, 50);
         missionEl.innerHTML=`<b>Rocket Lab</b><br/>Thrusting... fuel ${fuel}%<br/><span class="muted small">Escape velocity Earth ~11.2 km/s, Mars ~5 km/s.</span>`;
+      });
+      container.querySelector('[data-action="front-solar"]')?.addEventListener('click', ()=>{
+        const wrap=canvas.parentElement;
+        wrap.classList.toggle('front');
+        document.querySelectorAll('.card').forEach(c=>{ if(c!==container.closest('.card')) c.classList.toggle('front-behind', wrap.classList.contains('front')); });
+        setTimeout(resize,50);
       });
       container.querySelector('[data-action="reload-solar"]').addEventListener('click', async ()=>{
         if(raf) cancelAnimationFrame(raf);

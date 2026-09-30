@@ -520,9 +520,21 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
   display:block;
 }
 .canvas-wrap.front{
-  z-index:100;
-  box-shadow:12px 12px 0 var(--ink);
-  transform:translate(-2px,-2px);
+  z-index:9999 !important;
+  position:relative;
+  box-shadow:16px 16px 0 var(--ink);
+  transform:translate(-4px,-4px) scale(1.01);
+  outline:4px solid var(--yellow);
+  outline-offset:4px;
+}
+.canvas-wrap.front canvas{
+  z-index:10000 !important;
+}
+/* Ensure UI cards are behind when 3D is front */
+.card.front-behind{
+  z-index:1 !important;
+  opacity:.9;
+  transform:scale(.98);
 }
 .canvas-wrap::before{
   content:"";
