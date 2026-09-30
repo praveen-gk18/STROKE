@@ -6,10 +6,10 @@
 <title>Stroke – Maths, Science, Coding</title>
 <meta name="description" content="Stroke is an adaptive Maths, Science and Coding game with Three.js labs, Code Arena, and optional cloud sync.">
 <link rel="manifest" href="/manifest.webmanifest">
-<meta name="theme-color" content="#0b0e14">
+<meta name="theme-color" content="#101b29">
 <link rel="stylesheet" href="/css/main.css">
 <link rel="stylesheet" href="/css/sync.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%230b0e14%22/><path d=%22M30 70 Q50 10 70 70%22 stroke=%22%236cf%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23f6f2e6%22/><rect x=%226%22 y=%226%22 width=%2288%22 height=%2288%22 rx=%2216%22 fill=%22%23101b29%22 stroke=%22%23101b29%22 stroke-width=%226%22/><path d=%22M30 68 Q50 18 70 68%22 stroke=%22%23adf075%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
 <script type="importmap">
 {
   "imports": {
@@ -20,154 +20,230 @@
 </script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to content</a>
+
 <header class="topbar">
-  <div class="brand"><div class="dot"></div><span>Stroke</span><span class="muted" style="font-weight:400">Maths • Science • Coding</span></div>
-  <div class="stats">
-    <span class="pill">✨ XP <b id="stat-xp">0</b></span>
-    <span class="pill">🔥 Streak <b id="stat-streak">1</b></span>
-    <span class="pill">❤️ Hearts <b id="stat-hearts">5</b></span>
-    <span class="pill">🪙 Coins <b id="stat-coins">0</b></span>
-    <button class="btn" id="manage-sync-btn">Manage sync</button>
-    <span class="pill" id="health-status">API checking…</span>
+  <div class="brand">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 40 40" width="40" height="40" role="img"><rect x="2" y="2" width="36" height="36" rx="10" fill="#f6f2e6" stroke="#101b29" stroke-width="3"/><path d="M10 26 Q20 8 30 26" stroke="#101b29" stroke-width="3.5" fill="none" stroke-linecap="round"/><circle cx="20" cy="20" r="3" fill="#ff9e9c" stroke="#101b29" stroke-width="2"/></svg>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">STROKE</span>
+      <span class="brand-sub">Maths • Science • Coding</span>
+    </div>
+  </div>
+  <div class="stats" role="status" aria-live="polite">
+    <span class="pill pill-mint">✦ XP <b id="stat-xp">0</b></span>
+    <span class="pill pill-yellow">🔥 Streak <b id="stat-streak">1</b></span>
+    <span class="pill pill-coral">♥ Hearts <b id="stat-hearts">5</b></span>
+    <span class="pill pill-lavender">⬣ Coins <b id="stat-coins">0</b></span>
+    <button class="btn btn-sm" id="manage-sync-btn" aria-label="Manage cloud sync">Manage sync</button>
+    <span class="pill pill-sky" id="health-status">API checking…</span>
   </div>
 </header>
 
-<div id="sync-conflict-banner" class="sync-warning" style="display:none;margin:12px auto;max-width:1600px"></div>
+<div id="sync-conflict-banner" class="banner banner-warn" style="display:none;" role="alert"></div>
 
-<div class="layout">
-  <aside class="left">
-    <div class="card">
-      <h3>Learner</h3>
-      <input id="learner-name" class="sync-input" placeholder="Your name (optional)" />
-      <p class="muted" style="font-size:.85rem">Name stored locally in your progress. Used for personalization only.</p>
-      <hr/>
+<!-- HERO – tactile arcade story -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <div class="eyebrow">★ Playful • Hands-on • Adaptive ★</div>
+      <h1 id="hero-title" class="hero-title">
+        LEARN<br/>LIKE YOU<br/><span class="highlight highlight-mint">PLAY.</span>
+      </h1>
+      <p class="hero-desc">
+        Discovery-first quests in Maths, Science & Coding. No test to start. 
+        Try a real graph, atom, and code mission right here — then keep your progress.
+      </p>
+      <div class="hero-actions">
+        <a href="#hubs" class="btn btn-primary btn-lg" id="primary-cta">Start exploring ↓</a>
+        <button class="btn btn-lg" onclick="document.getElementById('hub-previews').scrollIntoView({behavior:'smooth'})">Try 60-sec preview</button>
+      </div>
+      <div class="hero-meta">
+        <span class="meta-chip">◆ No sign-in needed</span>
+        <span class="meta-chip">◆ 3 playable previews</span>
+        <span class="meta-chip">◆ Works offline</span>
+      </div>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <div class="art-stack">
+        <div class="art-card art-mint">
+          <div class="art-emoji">📐</div>
+          <div class="art-label">Graph Lab</div>
+          <div class="art-scribble"></div>
+        </div>
+        <div class="art-card art-yellow">
+          <div class="art-emoji">⚛</div>
+          <div class="art-label">Atom Builder</div>
+          <div class="art-dots"></div>
+        </div>
+        <div class="art-card art-coral">
+          <div class="art-emoji">💻</div>
+          <div class="art-label">Code Arena</div>
+          <div class="art-zig"></div>
+        </div>
+      </div>
+      <!-- illustrated geometric shapes -->
+      <svg class="shape shape-star" viewBox="0 0 100 100" width="80" height="80"><path d="M50 0 L61 35 L100 35 L68 57 L79 100 L50 75 L21 100 L32 57 L0 35 L39 35 Z" fill="#f4d36c" stroke="#101b29" stroke-width="4" stroke-linejoin="round"/></svg>
+      <svg class="shape shape-circle" viewBox="0 0 100 100" width="60" height="60"><circle cx="50" cy="50" r="40" fill="#90cce9" stroke="#101b29" stroke-width="4"/></svg>
+      <svg class="shape shape-squiggle" viewBox="0 0 200 40" width="140" height="28"><path d="M0 20 Q20 0 40 20 T80 20 T120 20 T160 20 T200 20" fill="none" stroke="#101b29" stroke-width="5" stroke-linecap="round"/></svg>
+    </div>
+  </div>
+</section>
+
+<main id="main-content" class="layout">
+  <aside class="left" aria-label="Learner progress">
+    <div class="card card-cream">
+      <h3><span aria-hidden="true">✎ </span>Learner</h3>
+      <input id="learner-name" class="input-arcade" placeholder="Your name (optional)" aria-label="Your name" />
+      <p class="muted">Name stays on this device. Used for personalization only.</p>
+      <hr class="rule"/>
       <h3>Hubs</h3>
-      <div id="hubs"></div>
+      <div id="hubs" role="list"></div>
     </div>
 
-    <div class="card" style="margin-top:12px">
+    <div class="card card-sky" style="margin-top:16px">
       <h3>Analytics</h3>
       <div id="analytics"></div>
     </div>
 
-    <div class="card" style="margin-top:12px">
+    <div class="card card-yellow" style="margin-top:16px">
       <h3>Mistake Notebook</h3>
       <div id="mistakes" class="scroll"></div>
     </div>
 
-    <div class="card" style="margin-top:12px">
+    <div class="card card-lavender" style="margin-top:16px">
       <h3>Flashcards</h3>
       <div id="flashcards"></div>
-      <p class="muted" style="font-size:.8rem">Click card to reveal.</p>
+      <p class="muted small">Click card to reveal.</p>
     </div>
 
-    <div class="card" style="margin-top:12px">
+    <div class="card card-mint" style="margin-top:16px">
       <h3>Settings</h3>
-      <button class="btn" id="export-progress">Export JSON</button>
-      <label class="btn" style="display:inline-block;cursor:pointer">Import JSON<input type="file" id="import-progress" style="display:none" accept=".json"></label>
-      <button class="btn ghost" id="reset-progress">Reset progress</button>
-      <p class="muted" style="font-size:.8rem;margin-top:8px">Old localStorage keys like learnquest_progress are kept for compatibility. Progress is local until you enable sync.</p>
+      <div class="stack">
+        <button class="btn" id="export-progress">Export JSON</button>
+        <label class="btn">Import JSON<input type="file" id="import-progress" style="display:none" accept=".json"></label>
+        <button class="btn btn-ghost" id="reset-progress">Reset progress</button>
+      </div>
+      <p class="muted small">Old keys like <code>learnquest_progress</code> kept for compatibility. Local until you enable sync.</p>
     </div>
   </aside>
 
-  <main class="main">
-    <div class="card">
-      <h3>Three playable hub previews</h3>
-      <p class="muted">Try before you dive deeper – these run without sign-in.</p>
-      <div id="hub-previews"></div>
-    </div>
-
-    <div class="card" style="margin-top:12px">
-      <h3 id="topics-title">Topics</h3>
-      <div id="topics"></div>
-    </div>
-
-    <div id="quest-area" style="margin-top:12px"></div>
-
-    <div class="card" style="margin-top:12px">
-      <h3>📈 Graph Visualizer</h3>
-      <div class="toolbar">
-        <input id="graph-func" class="sync-input" style="flex:1" value="Math.sin(x)" placeholder="f(x) e.g. Math.sin(x) or x*x" />
-        <label>xMin <input id="graph-xmin" type="number" value="-10" style="width:70px"></label>
-        <label>xMax <input id="graph-xmax" type="number" value="10" style="width:70px"></label>
+  <div class="main" role="main">
+    <!-- Try before you commit -->
+    <section class="card card-cream section-try" aria-labelledby="try-title">
+      <div class="section-head">
+        <h2 id="try-title" class="section-title">Try before you dive deeper</h2>
+        <span class="badge badge-arcade">3 playable previews • no sign-in</span>
       </div>
-      <div class="canvas-wrap"><canvas id="graph-canvas"></canvas></div>
-      <p class="muted">Type any JS expression using x and Math. Example: Math.cos(x)*x, Math.log(Math.abs(x)+1)</p>
-    </div>
+      <p class="muted">Touch, drag, run – these are real, not screenshots.</p>
+      <div id="hub-previews" class="preview-grid"></div>
+    </section>
 
-    <div id="maths-models" style="margin-top:12px"></div>
+    <section class="card card-mint" style="margin-top:20px" aria-labelledby="topics-title">
+      <div class="section-head">
+        <h2 id="topics-title" class="section-title">Pick a topic</h2>
+        <span class="badge badge-arcade">Adaptive • Level ups</span>
+      </div>
+      <div id="topics" role="list"></div>
+    </section>
 
-    <div class="card" style="margin-top:12px">
-      <h3>💻 Code Arena</h3>
+    <div id="quest-area" style="margin-top:20px" aria-live="polite"></div>
+
+    <section class="card card-yellow" style="margin-top:20px" aria-labelledby="graph-title">
+      <h2 id="graph-title" class="section-title">📈 Graph Visualizer</h2>
+      <div class="toolbar">
+        <input id="graph-func" class="input-arcade" style="flex:1" value="Math.sin(x)" placeholder="f(x) e.g. Math.sin(x) or x*x" aria-label="Function" />
+        <label class="field">xMin <input id="graph-xmin" class="input-arcade input-sm" type="number" value="-10"></label>
+        <label class="field">xMax <input id="graph-xmax" class="input-arcade input-sm" type="number" value="10"></label>
+      </div>
+      <div class="canvas-wrap"><canvas id="graph-canvas" aria-label="Graph canvas"></canvas></div>
+      <p class="muted small">Type any JS expression using x and Math. Example: Math.cos(x)*x</p>
+    </section>
+
+    <div id="maths-models" style="margin-top:20px"></div>
+
+    <section class="card card-lavender" style="margin-top:20px" aria-labelledby="code-title">
+      <h2 id="code-title" class="section-title">💻 Code Arena</h2>
+      <p class="muted">Runs in a time-limited Web Worker (2s) – no DOM access, safe to try.</p>
       <div id="code-arena"></div>
-    </div>
+    </section>
 
-    <div class="card" style="margin-top:12px">
-      <h3>🧪 Periodic Table – 118 Elements</h3>
+    <section class="card card-sky" style="margin-top:20px" aria-labelledby="periodic-title">
+      <h2 id="periodic-title" class="section-title">🧪 Periodic Table – 118 Elements</h2>
       <div id="periodic-table"></div>
-      <div id="atom-view" style="margin-top:12px"></div>
-    </div>
+      <div id="atom-view" style="margin-top:16px"></div>
+    </section>
 
-    <div class="card" style="margin-top:12px">
-      <h3>🧬 Molecule Explorer</h3>
+    <section class="card card-coral" style="margin-top:20px" aria-labelledby="molecule-title">
+      <h2 id="molecule-title" class="section-title">🧬 Molecule Explorer</h2>
       <div id="molecule-explorer"></div>
-    </div>
+    </section>
 
-    <div class="card" style="margin-top:12px">
-      <h3>🪐 Solar System Explorer</h3>
-      <p class="muted">Planet missions, gravity lab, orbit comparison, rocket-launch lab. All Three.js.</p>
+    <section class="card card-cream" style="margin-top:20px" aria-labelledby="solar-title">
+      <h2 id="solar-title" class="section-title">🪐 Solar System Explorer</h2>
+      <p class="muted">Planet missions, gravity lab, orbit comparison, rocket-launch lab – all Three.js.</p>
       <div id="solar-system"></div>
-    </div>
-  </main>
+    </section>
+  </div>
 
-  <aside class="right">
-    <div class="card">
+  <aside class="right" aria-label="How it works">
+    <div class="card card-cream">
       <h3>How Stroke works</h3>
-      <ul class="muted" style="font-size:.9rem;line-height:1.6">
-        <li>Discovery-first onboarding – placement optional to start</li>
-        <li>Adaptive quests per topic, hints, confidence checks</li>
-        <li>XP, streaks, hearts, coins, mistake notebook, flashcards</li>
-        <li>Interactive maths models + graph visualizer</li>
-        <li>Code Arena – runnable JS in time-limited Web Worker</li>
-        <li>Periodic table 118 + Three.js atom views</li>
-        <li>Three.js molecule explorer</li>
-        <li>Three.js solar-system with missions, gravity, orbit comparison, rocket lab</li>
-        <li>PWA offline + cloud sync opt-in via recovery key</li>
+      <ul class="list-arcade">
+        <li>Discovery-first – placement optional</li>
+        <li>Adaptive quests, hints, confidence</li>
+        <li>XP, streaks, hearts, coins</li>
+        <li>Mistake notebook & flashcards</li>
+        <li>Maths models + graph lab</li>
+        <li>Code Arena in Web Worker</li>
+        <li>118 elements + atom viewer</li>
+        <li>Molecule & solar-system labs</li>
+        <li>PWA offline + opt-in cloud sync</li>
       </ul>
-      <hr/>
-      <p class="muted" style="font-size:.85rem">Sync: generate a cryptographically random recovery key in browser. Copy it and restore on another device. Anyone with key can access that learner's progress. API is same-origin <code>/api</code> – no localhost calls from hosted site. 409 on stale revision to avoid overwriting newer progress.</p>
-      <p class="muted" style="font-size:.85rem">Storage: PostgreSQL when DATABASE_URL set, local JSON file fallback for dev only. Production requires DATABASE_URL because cloud filesystem may not persist.</p>
+      <hr class="rule"/>
+      <p class="muted small"><strong>Sync:</strong> random recovery key in browser. Anyone with key can access progress. Same-origin <code>/api</code>, 409 on stale revision.</p>
+      <p class="muted small"><strong>Storage:</strong> PostgreSQL when DATABASE_URL set, file fallback dev only.</p>
     </div>
 
-    <div class="card" style="margin-top:12px">
+    <div class="card card-yellow" style="margin-top:16px">
       <h3>Shortcuts</h3>
       <p><span class="kbd">Ctrl/Cmd+K</span> Manage sync</p>
-      <p class="muted" style="font-size:.85rem">PWA: installable, offline service worker does NOT cache /api responses.</p>
+      <p class="muted small">Service worker does NOT cache /api.</p>
     </div>
 
-    <div class="card" style="margin-top:12px">
+    <div class="card card-mint" style="margin-top:16px">
       <h3>Licenses</h3>
-      <p class="muted" style="font-size:.85rem">Three.js MIT – see <code>/vendor/THREE-LICENSE</code><br/>Element data: periodic table dataset (public domain facts) + custom JSON.<br/>Stroke product name; older localStorage keys retain earlier names for compatibility.</p>
+      <p class="muted small">Three.js MIT – <code>/vendor/THREE-LICENSE</code><br/>Element data: public domain facts + custom JSON.<br/>Older localStorage keys kept for compatibility.</p>
+    </div>
+
+    <div class="card card-lavender" style="margin-top:16px">
+      <h3>Live</h3>
+      <p><a class="link-arcade" href="https://stroke-f4op.onrender.com">stroke-f4op.onrender.com</a><br/><a class="link-arcade" href="/api/health">/api/health</a></p>
     </div>
   </aside>
-</div>
+</main>
 
-<div id="onboard-modal" class="modal">
-  <div class="modal-card">
+<div id="onboard-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="onboard-title">
+  <div class="modal-card card-cream">
     <div class="onboard-steps"><div class="step active"></div><div class="step"></div><div class="step"></div></div>
     <div data-role="onboard-content"></div>
   </div>
 </div>
 
-<div id="sync-modal" class="modal">
-  <div class="modal-card">
-    <div style="display:flex;justify-content:space-between;align-items:center"><h2>Manage sync</h2><button class="btn" id="close-sync-modal">Close</button></div>
+<div id="sync-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="sync-title">
+  <div class="modal-card card-cream">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="sync-title">Manage sync</h2><button class="btn btn-sm" id="close-sync-modal">Close</button></div>
     <div id="sync-ui-container"></div>
   </div>
 </div>
 
 <footer class="footer">
-  Stroke – adaptive learning game • <a class="link" href="/api/health">/api/health</a> • Built with Node 20+, Express, PostgreSQL, Three.js • No frontend build step
+  <div class="footer-inner">
+    <span>STROKE – tactile learning arcade</span>
+    <span>Built with Node 20+, Express, PostgreSQL, Three.js • No build step</span>
+  </div>
 </footer>
 
 <script type="module" src="/js/app.js"></script>
