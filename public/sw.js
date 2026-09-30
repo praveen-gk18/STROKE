@@ -1,79 +1,30 @@
-/**
- * sw.js – PWA offline service worker
- * Do NOT cache private /api responses
- */
-const CACHE_NAME = 'stroke-v2';
+const CACHE_NAME = 'stroke-v4-arcade-tabs';
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/css/main.css',
-  '/css/sync.css',
-  '/js/app.js',
-  '/js/sync.js',
-  '/js/maths.js',
-  '/js/science.js',
-  '/js/codeArena.js',
+  '/', '/index.html',
+  '/css/main.css','/css/sync.css',
+  '/js/app.js','/js/sync.js','/js/maths.js','/js/science.js','/js/codeArena.js',
   '/data/elements.json',
-  '/vendor/three.module.js',
-  '/vendor/OrbitControls.js',
+  '/vendor/three.module.js','/vendor/OrbitControls.js','/vendor/es-module-shims.js',
   '/manifest.webmanifest'
 ];
-
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(STATIC_ASSETS.map(u => new Request(u, { cache:'reload' }))).catch(err=>{
-        console.warn('[sw] cache addAll failed', err);
-      });
-    })
-  );
+self.addEventListener('install', e=>{
+  e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(STATIC_ASSETS.map(u=>new Request(u,{cache:'reload'}))).catch(()=>{})));
   self.skipWaiting();
 });
-
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))
-    ))
-  );
-  self.clients.claim();
+self.addEventListener('activate', e=>{
+  e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
-
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-
-  // Do not cache /api – network only, no-store
-  if (url.pathname.startsWith('/api/')) {
-    event.respondWith(
-      fetch(event.request, { cache:'no-store' }).catch(err=> {
-        return new Response(JSON.stringify({ error:'offline', message: err.message }), {
-          status: 503,
-          headers: { 'Content-Type':'application/json', 'Cache-Control':'no-store' }
-        });
-      })
-    );
+self.addEventListener('fetch', e=>{
+  const url=new URL(e.request.url);
+  if(url.pathname.startsWith('/api/')){
+    e.respondWith(fetch(e.request,{cache:'no-store'}).catch(()=>new Response(JSON.stringify({error:'offline'}),{status:503,headers:{'Content-Type':'application/json'}})));
     return;
   }
-
-  // For other requests, cache-first then network
-  if (event.request.method === 'GET') {
-    event.respondWith(
-      caches.match(event.request).then(cached => {
-        if (cached) return cached;
-        return fetch(event.request).then(resp => {
-          // cache successful same-origin static
-          if (resp.ok && url.origin === self.location.origin) {
-            const clone = resp.clone();
-            caches.open(CACHE_NAME).then(cache=> cache.put(event.request, clone));
-          }
-          return resp;
-        }).catch(()=>{
-          // fallback to index.html for navigation
-          if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
-          }
-        });
-      })
-    );
+  if(e.request.mode==='navigate'){
+    e.respondWith(fetch(e.request,{cache:'no-store'}).then(r=>{ if(r.ok){ const cl=r.clone(); caches.open(CACHE_NAME).then(c=>c.put(e.request,cl)); } return r; }).catch(()=>caches.match(e.request).then(c=>c||caches.match('/index.html'))));
+    return;
+  }
+  if(e.request.method==='GET'){
+    e.respondWith(caches.match(e.request).then(cached=>{ const fp=fetch(e.request).then(r=>{ if(r.ok&&url.origin===self.location.origin){ const cl=r.clone(); caches.open(CACHE_NAME).then(c=>c.put(e.request,cl)); } return r; }).catch(()=>cached); return cached||fp; }));
   }
 });
