@@ -1,0 +1,9 @@
+{
+  "name":"stroke-learning-server",
+  "version":"1.0.0",
+  "private":true,
+  "type":"module",
+  "engines":{"node":">=20"},
+  "scripts":{"start":"node server/index.js","dev":"node --watch server/index.js","test":"node --test server/*.test.js"},
+  "dependencies":{"express":"^4.21.2","pg":"^8.13.1"}
+}
