@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stroke – Maths, Science, Coding</title>
+<meta name="description" content="Stroke is an adaptive Maths, Science and Coding game with Three.js labs, Code Arena, and optional cloud sync.">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0b0e14">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/sync.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%230b0e14%22/><path d=%22M30 70 Q50 10 70 70%22 stroke=%22%236cf%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>">
+<script type="importmap">
+{
+  "imports": {
+    "three": "/vendor/three.module.js",
+    "three/addons/": "/vendor/"
+  }
+}
+</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="dot"></div><span>Stroke</span><span class="muted" style="font-weight:400">Maths • Science • Coding</span></div>
+  <div class="stats">
+    <span class="pill">✨ XP <b id="stat-xp">0</b></span>
+    <span class="pill">🔥 Streak <b id="stat-streak">1</b></span>
+    <span class="pill">❤️ Hearts <b id="stat-hearts">5</b></span>
+    <span class="pill">🪙 Coins <b id="stat-coins">0</b></span>
+    <button class="btn" id="manage-sync-btn">Manage sync</button>
+    <span class="pill" id="health-status">API checking…</span>
+  </div>
+</header>
+
+<div id="sync-conflict-banner" class="sync-warning" style="display:none;margin:12px auto;max-width:1600px"></div>
+
+<div class="layout">
+  <aside class="left">
+    <div class="card">
+      <h3>Learner</h3>
+      <input id="learner-name" class="sync-input" placeholder="Your name (optional)" />
+      <p class="muted" style="font-size:.85rem">Name stored locally in your progress. Used for personalization only.</p>
+      <hr/>
+      <h3>Hubs</h3>
+      <div id="hubs"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Analytics</h3>
+      <div id="analytics"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Mistake Notebook</h3>
+      <div id="mistakes" class="scroll"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Flashcards</h3>
+      <div id="flashcards"></div>
+      <p class="muted" style="font-size:.8rem">Click card to reveal.</p>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Settings</h3>
+      <button class="btn" id="export-progress">Export JSON</button>
+      <label class="btn" style="display:inline-block;cursor:pointer">Import JSON<input type="file" id="import-progress" style="display:none" accept=".json"></label>
+      <button class="btn ghost" id="reset-progress">Reset progress</button>
+      <p class="muted" style="font-size:.8rem;margin-top:8px">Old localStorage keys like learnquest_progress are kept for compatibility. Progress is local until you enable sync.</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="card">
+      <h3>Three playable hub previews</h3>
+      <p class="muted">Try before you dive deeper – these run without sign-in.</p>
+      <div id="hub-previews"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3 id="topics-title">Topics</h3>
+      <div id="topics"></div>
+    </div>
+
+    <div id="quest-area" style="margin-top:12px"></div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>📈 Graph Visualizer</h3>
+      <div class="toolbar">
+        <input id="graph-func" class="sync-input" style="flex:1" value="Math.sin(x)" placeholder="f(x) e.g. Math.sin(x) or x*x" />
+        <label>xMin <input id="graph-xmin" type="number" value="-10" style="width:70px"></label>
+        <label>xMax <input id="graph-xmax" type="number" value="10" style="width:70px"></label>
+      </div>
+      <div class="canvas-wrap"><canvas id="graph-canvas"></canvas></div>
+      <p class="muted">Type any JS expression using x and Math. Example: Math.cos(x)*x, Math.log(Math.abs(x)+1)</p>
+    </div>
+
+    <div id="maths-models" style="margin-top:12px"></div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>💻 Code Arena</h3>
+      <div id="code-arena"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>🧪 Periodic Table – 118 Elements</h3>
+      <div id="periodic-table"></div>
+      <div id="atom-view" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>🧬 Molecule Explorer</h3>
+      <div id="molecule-explorer"></div>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>🪐 Solar System Explorer</h3>
+      <p class="muted">Planet missions, gravity lab, orbit comparison, rocket-launch lab. All Three.js.</p>
+      <div id="solar-system"></div>
+    </div>
+  </main>
+
+  <aside class="right">
+    <div class="card">
+      <h3>How Stroke works</h3>
+      <ul class="muted" style="font-size:.9rem;line-height:1.6">
+        <li>Discovery-first onboarding – placement optional to start</li>
+        <li>Adaptive quests per topic, hints, confidence checks</li>
+        <li>XP, streaks, hearts, coins, mistake notebook, flashcards</li>
+        <li>Interactive maths models + graph visualizer</li>
+        <li>Code Arena – runnable JS in time-limited Web Worker</li>
+        <li>Periodic table 118 + Three.js atom views</li>
+        <li>Three.js molecule explorer</li>
+        <li>Three.js solar-system with missions, gravity, orbit comparison, rocket lab</li>
+        <li>PWA offline + cloud sync opt-in via recovery key</li>
+      </ul>
+      <hr/>
+      <p class="muted" style="font-size:.85rem">Sync: generate a cryptographically random recovery key in browser. Copy it and restore on another device. Anyone with key can access that learner's progress. API is same-origin <code>/api</code> – no localhost calls from hosted site. 409 on stale revision to avoid overwriting newer progress.</p>
+      <p class="muted" style="font-size:.85rem">Storage: PostgreSQL when DATABASE_URL set, local JSON file fallback for dev only. Production requires DATABASE_URL because cloud filesystem may not persist.</p>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Shortcuts</h3>
+      <p><span class="kbd">Ctrl/Cmd+K</span> Manage sync</p>
+      <p class="muted" style="font-size:.85rem">PWA: installable, offline service worker does NOT cache /api responses.</p>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3>Licenses</h3>
+      <p class="muted" style="font-size:.85rem">Three.js MIT – see <code>/vendor/THREE-LICENSE</code><br/>Element data: periodic table dataset (public domain facts) + custom JSON.<br/>Stroke product name; older localStorage keys retain earlier names for compatibility.</p>
+    </div>
+  </aside>
+</div>
+
+<div id="onboard-modal" class="modal">
+  <div class="modal-card">
+    <div class="onboard-steps"><div class="step active"></div><div class="step"></div><div class="step"></div></div>
+    <div data-role="onboard-content"></div>
+  </div>
+</div>
+
+<div id="sync-modal" class="modal">
+  <div class="modal-card">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2>Manage sync</h2><button class="btn" id="close-sync-modal">Close</button></div>
+    <div id="sync-ui-container"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  Stroke – adaptive learning game • <a class="link" href="/api/health">/api/health</a> • Built with Node 20+, Express, PostgreSQL, Three.js • No frontend build step
+</footer>
+
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
