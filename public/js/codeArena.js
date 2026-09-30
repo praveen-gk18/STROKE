@@ -109,22 +109,26 @@ export const CodeArena = {
 
   init(container, onComplete) {
     container.innerHTML = `
-      <div class="card">
-        <h3>Code Arena – Runnable JS Missions</h3>
-        <p class="muted">Your code runs in a time-limited Web Worker (2s timeout). No DOM access.</p>
-        <div class="toolbar">
-          <select data-role="mission-select"></select>
-          <span class="badge" data-role="difficulty"></span>
+      <div class="card card-cream" style="margin:0">
+        <div class="section-head">
+          <h3 style="margin:0">Code Arena – Runnable JS Missions</h3>
+          <span class="badge badge-arcade">Worker • 2s limit</span>
         </div>
-        <p data-role="prompt"></p>
-        <textarea class="code-editor" data-role="editor"></textarea>
-        <div class="toolbar" style="margin-top:8px">
-          <button class="btn primary" data-action="run">Run & Test (Worker)</button>
-          <button class="btn" data-action="hint">Hint</button>
-          <button class="btn ghost" data-action="reset">Reset</button>
+        <p class="muted small">Your code runs in a time-limited Web Worker (2s timeout). No DOM access. If editor is blank, switch tabs and back – it will restore.</p>
+        <div class="toolbar">
+          <select data-role="mission-select" class="input-arcade" style="flex:1;max-width:260px"></select>
+          <span class="badge" data-role="difficulty"></span>
+          <button class="btn btn-sm" data-action="reload-arena">Reload</button>
+        </div>
+        <p data-role="prompt" style="font-weight:800;font-size:1.1rem"></p>
+        <textarea class="code-editor" data-role="editor" aria-label="Code editor"></textarea>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn btn-primary" data-action="run">Run & Test (Worker)</button>
+          <button class="btn btn-sm" data-action="hint">Hint</button>
+          <button class="btn btn-sm btn-ghost" data-action="reset">Reset</button>
           <span data-role="timer" class="kbd"></span>
         </div>
-        <div class="log" data-role="log">Ready.</div>
+        <div class="log" data-role="log">Ready – select a mission and run.</div>
         <div data-role="hint" class="hint" style="display:none"></div>
       </div>
     `;
@@ -161,6 +165,9 @@ export const CodeArena = {
     });
     container.querySelector('[data-action="reset"]').addEventListener('click', ()=>{
       editor.value=current.starter;
+    });
+    container.querySelector('[data-action="reload-arena"]')?.addEventListener('click', ()=>{
+      CodeArena.init(container, onComplete);
     });
 
     container.querySelector('[data-action="run"]').addEventListener('click', async ()=>{
