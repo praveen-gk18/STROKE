@@ -1,5 +1,8 @@
 # Stroke — website and progress-sync backend
 
+**Live deployment:** https://stroke-f4op.onrender.com  
+**Health check:** https://stroke-f4op.onrender.com/api/health
+
 Stroke is an adaptive Maths, Science, and Coding game. This repository contains the complete static website in `public/` and a Node.js API in `server/`. The server hosts the website and optionally syncs learner progress between devices with a private recovery key. No third-party login is needed. The existing browser-only experience still works without enabling sync.
 
 ## Run locally
@@ -11,19 +14,28 @@ npm ci
 npm start
 ```
 
-Open **http://localhost:3000**. The local backend stores sync data in `server/data/progress.json` (ignored by Git). To use PostgreSQL instead, set `DATABASE_URL` in your environment before starting. Production refuses to start without a database URL because local disks on cloud hosts may be ephemeral.
+Open **https://stroke-f4op.onrender.com** for the live site, or **http://localhost:3000** for local development. The local backend stores sync data in `server/data/progress.json` (ignored by Git). To use PostgreSQL instead, set `DATABASE_URL` in your environment before starting. Production refuses to start without a database URL because local disks on cloud hosts may be ephemeral.
 
 Run tests: `npm test`.
 
-## Deploy to Render
+## Deploy to Render – Live
 
-1. Push this repository to GitHub. The intended remote supplied by the user is `https://github.com/praveen-gk18/stroke..git` (note the two dots; verify the repository exists and that you have write access).
+**Live URL:** https://stroke-f4op.onrender.com  
+**Repo:** https://github.com/praveen-gk18/STROKE. (note the two dots in the name)
+
+This deployment is already live on Render with PostgreSQL. Verified:
+
+- `GET https://stroke-f4op.onrender.com/api/health` → `{"status":"ok","storage":"postgres"}`
+- `GET https://stroke-f4op.onrender.com/` → serves the full game
+
+### How it was deployed
+
+1. Push this repository to GitHub. The intended remote is `https://github.com/praveen-gk18/stroke..git` (note the two dots).
 2. In Render, choose **New → Blueprint**, connect the repository, and select its `render.yaml`.
 3. Review the **web-service and PostgreSQL plans/pricing** in Render before approving creation. The Blueprint supplies `DATABASE_URL` from the database to the web service. No secret belongs in Git.
-4. When deployment succeeds, visit the generated Render service URL and `/api/health`. Render provides the public HTTPS hostname. The app uses same-origin relative `/api` calls, so it needs no CORS configuration.
-5. In Stroke, open **Manage sync → Enable cloud save**, then store the recovery key somewhere private. Enter that key on another device and choose **Restore that progress**.
-
-This workspace can run a local preview, but **cannot publish a live Render site or push to GitHub without the account's authentication/authorization**.
+4. If you see `DATABASE_URL is required in production`, go to Render Dashboard → your Web Service → Environment → Add from database → select `stroke-db` → key `DATABASE_URL` → Save → Manual Deploy.
+5. When deployment succeeds, visit the Render URL and `/api/health`. The app uses same-origin relative `/api` calls, so it needs no CORS configuration.
+6. In Stroke, open **Manage sync → Enable cloud save**, then store the recovery key somewhere private. Enter that key on another device and choose **Restore that progress**.
 
 ## API
 
