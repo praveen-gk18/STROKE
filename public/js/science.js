@@ -53,11 +53,17 @@ export const Science = {
   async initAtomViewer(container, element) {
     // Three.js atom view – nucleus + electrons in shells
     container.innerHTML = `<div class="canvas-wrap atom-view"><canvas></canvas></div>
-      <div class="card" style="margin-top:8px"><h3>${element.name} (${element.symbol})</h3>
+      <div class="card card-cream" style="margin-top:12px"><h3>${element.name} (${element.symbol})</h3>
       <p class="muted">Atomic #${element.number} – Mass ${element.mass} – ${element.category}<br/>
       Config: ${element.electronConfig} – Discovered: ${element.discovered}</p>
-      <p>Electrons arranged in shells. Three.js atom model with orbiting electrons.</p></div>`;
+      <p class="muted small">Electrons arranged in shells. Three.js atom model with orbiting electrons. Drag to orbit, scroll to zoom.</p></div>`;
     const canvas = container.querySelector('canvas');
+    // Wait for container to be visible (tabs)
+    for(let i=0;i<10;i++){
+      const rect=canvas.parentElement.getBoundingClientRect();
+      if(rect.width>50 && rect.height>50) break;
+      await new Promise(r=>setTimeout(r,150));
+    }
 
     const { default: THREE } = await import('/vendor/three.module.js');
     // Use dynamic import for OrbitControls
@@ -157,21 +163,26 @@ export const Science = {
   async initMoleculeExplorer(container) {
     container.innerHTML = `
       <div class="toolbar">
-        <select data-role="mol-select">
+        <select data-role="mol-select" class="input-arcade" style="flex:1;max-width:200px">
           <option value="water">Water H2O</option>
           <option value="methane">Methane CH4</option>
           <option value="co2">Carbon Dioxide CO2</option>
           <option value="benzene">Benzene C6H6</option>
           <option value="dna">DNA fragment</option>
         </select>
-        <button class="btn" data-action="spin">Toggle spin</button>
-        <button class="btn" data-action="explode">Explode / Assemble</button>
+        <button class="btn btn-sm" data-action="spin">Toggle spin</button>
+        <button class="btn btn-sm" data-action="explode">Explode / Assemble</button>
       </div>
       <div class="canvas-wrap molecule-view"><canvas></canvas></div>
-      <p class="muted">Three.js molecule explorer – atoms as spheres, bonds as cylinders. Orbit to inspect.</p>
+      <p class="muted small">Three.js molecule explorer – atoms as spheres, bonds as cylinders. Orbit to inspect. If blank, switch tabs and back – it will resize.</p>
     `;
     const canvas = container.querySelector('canvas');
     const select = container.querySelector('[data-role="mol-select"]');
+    for(let i=0;i<10;i++){
+      const rect=canvas.parentElement.getBoundingClientRect();
+      if(rect.width>50) break;
+      await new Promise(r=>setTimeout(r,150));
+    }
 
     const THREE = (await import('/vendor/three.module.js')).default;
     let OrbitControls;
@@ -333,7 +344,7 @@ export const Science = {
   async initSolarSystem(container) {
     container.innerHTML = `
       <div class="toolbar">
-        <select data-role="planet-select">
+        <select data-role="planet-select" class="input-arcade" style="max-width:160px">
           <option value="all">All planets</option>
           <option value="mercury">Mercury</option>
           <option value="venus">Venus</option>
@@ -344,17 +355,22 @@ export const Science = {
           <option value="uranus">Uranus</option>
           <option value="neptune">Neptune</option>
         </select>
-        <button class="btn" data-action="toggle-orbit">Toggle orbits</button>
-        <button class="btn" data-action="toggle-gravity">Gravity lab</button>
-        <button class="btn primary" data-action="rocket">Rocket launch lab</button>
+        <button class="btn btn-sm" data-action="toggle-orbit">Toggle orbits</button>
+        <button class="btn btn-sm" data-action="toggle-gravity">Gravity lab</button>
+        <button class="btn btn-sm btn-primary" data-action="rocket">Rocket launch lab</button>
       </div>
       <div class="canvas-wrap solar-view"><canvas></canvas></div>
-      <div class="grid2" style="margin-top:8px">
-        <div class="card"><h4>Orbit comparison</h4><canvas data-role="orbit-chart" height="120"></canvas></div>
-        <div class="card"><h4>Planet mission</h4><div data-role="mission"></div></div>
+      <div class="grid2" style="margin-top:12px">
+        <div class="card card-cream"><h4>Orbit comparison</h4><canvas data-role="orbit-chart" height="120"></canvas></div>
+        <div class="card card-cream"><h4>Planet mission</h4><div data-role="mission"></div></div>
       </div>
     `;
     const canvas = container.querySelector('canvas');
+    for(let i=0;i<10;i++){
+      const rect=canvas.parentElement.getBoundingClientRect();
+      if(rect.width>50) break;
+      await new Promise(r=>setTimeout(r,150));
+    }
     const THREE = (await import('/vendor/three.module.js')).default;
     let OrbitControls;
     try { OrbitControls = (await import('/vendor/OrbitControls.js')).OrbitControls; } catch {}

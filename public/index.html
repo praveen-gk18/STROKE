@@ -44,7 +44,7 @@
 
 <div id="sync-conflict-banner" class="banner banner-warn" style="display:none;" role="alert"></div>
 
-<!-- HERO – tactile arcade story -->
+<!-- HERO -->
 <section class="hero" aria-labelledby="hero-title">
   <div class="hero-inner">
     <div class="hero-copy">
@@ -57,8 +57,8 @@
         Try a real graph, atom, and code mission right here — then keep your progress.
       </p>
       <div class="hero-actions">
-        <a href="#hubs" class="btn btn-primary btn-lg" id="primary-cta">Start exploring ↓</a>
-        <button class="btn btn-lg" onclick="document.getElementById('hub-previews').scrollIntoView({behavior:'smooth'})">Try 60-sec preview</button>
+        <a href="#tabs-bar" class="btn btn-primary btn-lg" id="primary-cta">Start exploring ↓</a>
+        <button class="btn btn-lg" onclick="document.getElementById('tab-explore').scrollIntoView({behavior:'smooth'})">Try 60-sec preview</button>
       </div>
       <div class="hero-meta">
         <span class="meta-chip">◆ No sign-in needed</span>
@@ -84,13 +84,21 @@
           <div class="art-zig"></div>
         </div>
       </div>
-      <!-- illustrated geometric shapes -->
       <svg class="shape shape-star" viewBox="0 0 100 100" width="80" height="80"><path d="M50 0 L61 35 L100 35 L68 57 L79 100 L50 75 L21 100 L32 57 L0 35 L39 35 Z" fill="#f4d36c" stroke="#101b29" stroke-width="4" stroke-linejoin="round"/></svg>
       <svg class="shape shape-circle" viewBox="0 0 100 100" width="60" height="60"><circle cx="50" cy="50" r="40" fill="#90cce9" stroke="#101b29" stroke-width="4"/></svg>
       <svg class="shape shape-squiggle" viewBox="0 0 200 40" width="140" height="28"><path d="M0 20 Q20 0 40 20 T80 20 T120 20 T160 20 T200 20" fill="none" stroke="#101b29" stroke-width="5" stroke-linecap="round"/></svg>
     </div>
   </div>
 </section>
+
+<!-- TABS BAR -->
+<nav id="tabs-bar" class="tabs-bar" role="tablist" aria-label="Subjects">
+  <button role="tab" data-tab="explore" aria-selected="true" class="tab-btn active" id="tab-btn-explore">✦ Explore</button>
+  <button role="tab" data-tab="maths" aria-selected="false" class="tab-btn" id="tab-btn-maths">📐 Maths</button>
+  <button role="tab" data-tab="science" aria-selected="false" class="tab-btn" id="tab-btn-science">🔬 Science</button>
+  <button role="tab" data-tab="coding" aria-selected="false" class="tab-btn" id="tab-btn-coding">💻 Coding</button>
+  <button role="tab" data-tab="labs" aria-selected="false" class="tab-btn" id="tab-btn-labs">🧪 Labs</button>
+</nav>
 
 <main id="main-content" class="layout">
   <aside class="left" aria-label="Learner progress">
@@ -126,66 +134,97 @@
         <label class="btn">Import JSON<input type="file" id="import-progress" style="display:none" accept=".json"></label>
         <button class="btn btn-ghost" id="reset-progress">Reset progress</button>
       </div>
-      <p class="muted small">Old keys like <code>learnquest_progress</code> kept for compatibility. Local until you enable sync.</p>
+      <p class="muted small">Old keys like <code>learnquest_progress</code> kept for compatibility.</p>
     </div>
   </aside>
 
   <div class="main" role="main">
-    <!-- Try before you commit -->
-    <section class="card card-cream section-try" aria-labelledby="try-title">
-      <div class="section-head">
-        <h2 id="try-title" class="section-title">Try before you dive deeper</h2>
-        <span class="badge badge-arcade">3 playable previews • no sign-in</span>
-      </div>
-      <p class="muted">Touch, drag, run – these are real, not screenshots.</p>
-      <div id="hub-previews" class="preview-grid"></div>
-    </section>
+    <!-- EXPLORE TAB -->
+    <div id="tab-explore" data-tab-panel="explore" class="tab-panel active" role="tabpanel" aria-labelledby="tab-btn-explore">
+      <section class="card card-cream section-try">
+        <div class="section-head">
+          <h2 class="section-title">Try before you dive deeper</h2>
+          <span class="badge badge-arcade">3 playable previews • no sign-in</span>
+        </div>
+        <p class="muted">Touch, drag, run – these are real, not screenshots.</p>
+        <div id="hub-previews" class="preview-grid"></div>
+      </section>
 
-    <section class="card card-mint" style="margin-top:20px" aria-labelledby="topics-title">
-      <div class="section-head">
-        <h2 id="topics-title" class="section-title">Pick a topic</h2>
-        <span class="badge badge-arcade">Adaptive • Level ups</span>
-      </div>
-      <div id="topics" role="list"></div>
-    </section>
+      <section class="card card-mint" style="margin-top:20px">
+        <div class="section-head">
+          <h2 id="topics-title" class="section-title">Pick a topic</h2>
+          <span class="badge badge-arcade">Adaptive • Level ups</span>
+        </div>
+        <div id="topics" role="list"></div>
+      </section>
 
-    <div id="quest-area" style="margin-top:20px" aria-live="polite"></div>
+      <div id="quest-area" style="margin-top:20px" aria-live="polite"></div>
+    </div>
 
-    <section class="card card-yellow" style="margin-top:20px" aria-labelledby="graph-title">
-      <h2 id="graph-title" class="section-title">📈 Graph Visualizer</h2>
-      <div class="toolbar">
-        <input id="graph-func" class="input-arcade" style="flex:1" value="Math.sin(x)" placeholder="f(x) e.g. Math.sin(x) or x*x" aria-label="Function" />
-        <label class="field">xMin <input id="graph-xmin" class="input-arcade input-sm" type="number" value="-10"></label>
-        <label class="field">xMax <input id="graph-xmax" class="input-arcade input-sm" type="number" value="10"></label>
-      </div>
-      <div class="canvas-wrap"><canvas id="graph-canvas" aria-label="Graph canvas"></canvas></div>
-      <p class="muted small">Type any JS expression using x and Math. Example: Math.cos(x)*x</p>
-    </section>
+    <!-- MATHS TAB -->
+    <div id="tab-maths" data-tab-panel="maths" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-maths" hidden>
+      <section class="card card-yellow">
+        <div class="section-head">
+          <h2 class="section-title">📈 Graph Visualizer</h2>
+          <span class="badge badge-arcade">Type any f(x)</span>
+        </div>
+        <div class="toolbar">
+          <input id="graph-func" class="input-arcade" style="flex:1" value="Math.sin(x)" placeholder="f(x) e.g. Math.sin(x) or x*x" aria-label="Function" />
+          <label class="field">xMin <input id="graph-xmin" class="input-arcade input-sm" type="number" value="-10"></label>
+          <label class="field">xMax <input id="graph-xmax" class="input-arcade input-sm" type="number" value="10"></label>
+        </div>
+        <div class="canvas-wrap"><canvas id="graph-canvas" aria-label="Graph canvas"></canvas></div>
+        <p class="muted small">Type any JS expression using x and Math. Example: Math.cos(x)*x</p>
+      </section>
+      <div id="maths-models" style="margin-top:20px"></div>
+    </div>
 
-    <div id="maths-models" style="margin-top:20px"></div>
+    <!-- SCIENCE TAB -->
+    <div id="tab-science" data-tab-panel="science" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-science" hidden>
+      <section class="card card-sky">
+        <div class="section-head">
+          <h2 class="section-title">🧪 Periodic Table – 118 Elements</h2>
+          <span class="badge badge-arcade">Click any element → 3D atom</span>
+        </div>
+        <div class="periodic-wrap">
+          <div id="periodic-table"></div>
+        </div>
+        <div id="atom-view" style="margin-top:16px"></div>
+      </section>
+    </div>
 
-    <section class="card card-lavender" style="margin-top:20px" aria-labelledby="code-title">
-      <h2 id="code-title" class="section-title">💻 Code Arena</h2>
-      <p class="muted">Runs in a time-limited Web Worker (2s) – no DOM access, safe to try.</p>
-      <div id="code-arena"></div>
-    </section>
+    <!-- CODING TAB -->
+    <div id="tab-coding" data-tab-panel="coding" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-coding" hidden>
+      <section class="card card-lavender">
+        <div class="section-head">
+          <h2 class="section-title">💻 Code Arena – Runnable Missions</h2>
+          <span class="badge badge-arcade">Web Worker • 2s limit</span>
+        </div>
+        <p class="muted">Your code runs in a time-limited Web Worker – safe to try, no DOM access.</p>
+        <div id="code-arena"></div>
+      </section>
+    </div>
 
-    <section class="card card-sky" style="margin-top:20px" aria-labelledby="periodic-title">
-      <h2 id="periodic-title" class="section-title">🧪 Periodic Table – 118 Elements</h2>
-      <div id="periodic-table"></div>
-      <div id="atom-view" style="margin-top:16px"></div>
-    </section>
+    <!-- LABS TAB -->
+    <div id="tab-labs" data-tab-panel="labs" class="tab-panel" role="tabpanel" aria-labelledby="tab-btn-labs" hidden>
+      <section class="card card-coral">
+        <div class="section-head">
+          <h2 class="section-title">🧬 Molecule Explorer</h2>
+          <span class="badge badge-arcade">Three.js • Orbit • Explode</span>
+        </div>
+        <div id="molecule-explorer"></div>
+      </section>
 
-    <section class="card card-coral" style="margin-top:20px" aria-labelledby="molecule-title">
-      <h2 id="molecule-title" class="section-title">🧬 Molecule Explorer</h2>
-      <div id="molecule-explorer"></div>
-    </section>
+      <section class="card card-cream" style="margin-top:20px">
+        <div class="section-head">
+          <h2 class="section-title">🪐 Solar System Explorer</h2>
+          <span class="badge badge-arcade">Missions • Gravity • Rocket lab</span>
+        </div>
+        <p class="muted">Planet missions, gravity lab, orbit comparison, rocket-launch lab – all Three.js.</p>
+        <div id="solar-system"></div>
+      </section>
+    </div>
 
-    <section class="card card-cream" style="margin-top:20px" aria-labelledby="solar-title">
-      <h2 id="solar-title" class="section-title">🪐 Solar System Explorer</h2>
-      <p class="muted">Planet missions, gravity lab, orbit comparison, rocket-launch lab – all Three.js.</p>
-      <div id="solar-system"></div>
-    </section>
   </div>
 
   <aside class="right" aria-label="How it works">
@@ -203,22 +242,16 @@
         <li>PWA offline + opt-in cloud sync</li>
       </ul>
       <hr class="rule"/>
-      <p class="muted small"><strong>Sync:</strong> random recovery key in browser. Anyone with key can access progress. Same-origin <code>/api</code>, 409 on stale revision.</p>
-      <p class="muted small"><strong>Storage:</strong> PostgreSQL when DATABASE_URL set, file fallback dev only.</p>
+      <p class="muted small"><strong>Sync:</strong> random recovery key in browser. Same-origin <code>/api</code>, 409 on stale revision.</p>
     </div>
 
     <div class="card card-yellow" style="margin-top:16px">
       <h3>Shortcuts</h3>
       <p><span class="kbd">Ctrl/Cmd+K</span> Manage sync</p>
-      <p class="muted small">Service worker does NOT cache /api.</p>
+      <p class="muted small">Tabs: Explore, Maths, Science, Coding, Labs – reduces congestion.</p>
     </div>
 
     <div class="card card-mint" style="margin-top:16px">
-      <h3>Licenses</h3>
-      <p class="muted small">Three.js MIT – <code>/vendor/THREE-LICENSE</code><br/>Element data: public domain facts + custom JSON.<br/>Older localStorage keys kept for compatibility.</p>
-    </div>
-
-    <div class="card card-lavender" style="margin-top:16px">
       <h3>Live</h3>
       <p><a class="link-arcade" href="https://stroke-f4op.onrender.com">stroke-f4op.onrender.com</a><br/><a class="link-arcade" href="/api/health">/api/health</a></p>
     </div>
@@ -242,7 +275,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <span>STROKE – tactile learning arcade</span>
-    <span>Built with Node 20+, Express, PostgreSQL, Three.js • No build step</span>
+    <span>Node 20+, Express, PostgreSQL, Three.js • No build step</span>
   </div>
 </footer>
 
