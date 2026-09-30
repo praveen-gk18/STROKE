@@ -1,0 +1,29 @@
+/* sync.css - cloud sync UI */
+.sync-status{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;
+  background:rgba(108,207,255,.08);border:1px solid rgba(108,207,255,.18);
+  font-size:.9rem;
+}
+.sync-status.off{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--muted)}
+.sync-key-box{
+  background:#0a0f1c;border:1px solid var(--border);border-radius:12px;padding:12px;
+  font-family:ui-monospace, SFMono-Regular, Menlo, monospace;
+  word-break:break-all;user-select:all;
+  position:relative;
+}
+.sync-key-box .copy{
+  position:absolute;top:8px;right:8px;
+}
+.sync-warning{
+  padding:10px;border-radius:10px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.25);
+  color:#ffb4b4;font-size:.9rem;
+}
+.sync-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.sync-modal-section{margin:14px 0;padding:14px;border-radius:12px;background:var(--card);border:1px solid var(--border)}
+.sync-input{
+  width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+  background:#0a0f1c;color:var(--text);font-family:ui-monospace,monospace;
+}
+.sync-conflict{
+  padding:12px;border-radius:12px;background:rgba(255,184,106,.12);border:1px solid rgba(255,184,106,.3);
+}
