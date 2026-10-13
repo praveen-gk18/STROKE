@@ -1,3 +1,7 @@
+import multer from 'multer';
+import { addDocumentChunks, queryRAG, parseFile, generateFromChunks } from './rag.js';
+const upload = multer({dest:'uploads/'});
+let materials=[]; // in prod store in PG
 import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -169,6 +173,23 @@ app.use((err, req, res, next) => {
   }
   console.error('[express] unhandled error', err);
   res.status(500).json({ error: 'Internal server error' });
+});
+
+app.post('/api/materials', upload.single('file'), async (req,res)=>{
+  try{
+    const text = await parseFile(req.file.path, req.file.mimetype);
+    const mat = {id:Date.now().toString(), name:req.file.originalname, text:text.slice(0,20000), created:Date.now()};
+    materials.push(mat);
+    addDocumentChunks(mat.id, text);
+    res.json({ok:true, material:mat});
+  }catch(e){ res.status(500).json({error:e.message}); }
+});
+app.get('/api/materials', (req,res)=>res.json(materials));
+app.post('/api/rag/query', (req,res)=>{
+  const {q} = req.body;
+  const chunks = queryRAG(q, 4);
+  const gen = generateFromChunks(q, chunks);
+  res.json(gen);
 });
 
 async function start() {
