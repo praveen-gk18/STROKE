@@ -6,6 +6,7 @@ import { Sync, createSyncUI } from './sync.js';
 import { Maths } from './maths.js';
 import { Science } from './science.js';
 import { CodeArena } from './codeArena.js';
+import { RAG } from './rag.js';
 
 const LEGACY_KEYS = ['learnquest_progress','stroke_legacy','stroke_v1'];
 const CURRENT_KEY = 'stroke_progress';
@@ -538,6 +539,7 @@ function initTabs(){
         initCodeArena();
         window._strokeCodingInited=true;
       }
+      if(tab==='rag') RAG.init(document.getElementById('tab-rag'));
     }, 120);
   }
   tabBtns.forEach(btn=>{
